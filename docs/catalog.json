@@ -1,7 +1,67 @@
 {
-  "generatedAt": "2026-09-13T19:45:59.245Z",
-  "count": 3,
+  "generatedAt": "2026-09-13T20:05:15.724Z",
+  "count": 13,
   "images": [
+    {
+      "id": "2151535201",
+      "name": "2151535201",
+      "thumb": "thumbs/2151535201.jpg",
+      "image": "images/2151535201.jpg",
+      "width": 1500,
+      "height": 1000,
+      "thumbWidth": 300,
+      "thumbHeight": 200
+    },
+    {
+      "id": "ajkaceratops-9bfa2b47",
+      "name": "Ajkaceratops",
+      "thumb": "thumbs/ajkaceratops-9bfa2b47.jpg",
+      "image": "images/ajkaceratops-9bfa2b47.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
+    {
+      "id": "astrodon-7bdc039c",
+      "name": "Astrodon",
+      "thumb": "thumbs/astrodon-7bdc039c.jpg",
+      "image": "images/astrodon-7bdc039c.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
+    {
+      "id": "athenar-488f5cb9",
+      "name": "Athenar",
+      "thumb": "thumbs/athenar-488f5cb9.jpg",
+      "image": "images/athenar-488f5cb9.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
+    {
+      "id": "athenar-4c667ac1",
+      "name": "Athenar",
+      "thumb": "thumbs/athenar-4c667ac1.jpg",
+      "image": "images/athenar-4c667ac1.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
+    {
+      "id": "edmontonia-252dd0c6",
+      "name": "Edmontonia",
+      "thumb": "thumbs/edmontonia-252dd0c6.jpg",
+      "image": "images/edmontonia-252dd0c6.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
     {
       "id": "formas-y-colores",
       "name": "Formas y Colores",
@@ -11,6 +71,46 @@
       "height": 1200,
       "thumbWidth": 300,
       "thumbHeight": 225
+    },
+    {
+      "id": "guemesia-b7382bc1",
+      "name": "Guemesia",
+      "thumb": "thumbs/guemesia-b7382bc1.jpg",
+      "image": "images/guemesia-b7382bc1.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
+    {
+      "id": "lokiceratops-4a5926a0",
+      "name": "Lokiceratops",
+      "thumb": "thumbs/lokiceratops-4a5926a0.jpg",
+      "image": "images/lokiceratops-4a5926a0.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
+    {
+      "id": "makrodactylus-6a66c2b2",
+      "name": "Makrodactylus",
+      "thumb": "thumbs/makrodactylus-6a66c2b2.jpg",
+      "image": "images/makrodactylus-6a66c2b2.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
+    },
+    {
+      "id": "makrodactylus-9a88a385",
+      "name": "Makrodactylus",
+      "thumb": "thumbs/makrodactylus-9a88a385.jpg",
+      "image": "images/makrodactylus-9a88a385.jpg",
+      "width": 1280,
+      "height": 698,
+      "thumbWidth": 300,
+      "thumbHeight": 164
     },
     {
       "id": "mosaico-ancho",
