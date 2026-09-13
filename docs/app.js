@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.2.0';
+  var VERSION = '1.3.0';
   var MAX_SRC = 1600;          // lado maximo de la imagen fuente (fotos subidas)
   var TAB = 0.1;               // tamano del tab relativo al lado de la pieza (altura = 3*TAB)
   var MARGIN_FACTOR = 0.36;    // margen alrededor de cada pieza para que quepan los tabs
@@ -17,6 +17,8 @@
 
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var catalog = [];            // entradas de catalog.json
+  var categories = [];         // categorias del catalogo (carpetas de images-source)
+  var activeCategory = '';     // '' = todas
   var selected = null;         // entrada elegida
   var selectedItem = null;     // nodo DOM del thumbnail elegido
   var sourceCache = {};        // id -> Image
@@ -120,6 +122,9 @@
         return;
       }
       catalog = data.images || [];
+      categories = data.categories || [];
+      activeCategory = '';
+      renderCategories();
       renderGallery();
       setText(el.catalogStatus, catalog.length ? '' :
         'El catálogo está vacío. Agrega imágenes en images-source/ y ejecuta node build.ts.');
@@ -128,9 +133,59 @@
     });
   }
 
+  // Una carpeta de images-source es una categoria. Con una sola categoria no hay
+  // nada que filtrar, asi que se muestra solo su nombre.
+  function renderCategories() {
+    el.categories.innerHTML = '';
+    if (categories.length < 1) { hide(el.categories); return; }
+    show(el.categories);
+
+    if (categories.length === 1) {
+      var label = document.createElement('span');
+      label.className = 'cat-label';
+      label.appendChild(document.createTextNode(categories[0].name));
+      el.categories.appendChild(label);
+      return;
+    }
+
+    addCategoryButton({ id: '', name: 'Todas', count: catalog.length });
+    for (var i = 0; i < categories.length; i++) addCategoryButton(categories[i]);
+  }
+
+  function addCategoryButton(cat) {
+    var btn = document.createElement('button');
+    btn.className = 'btn btn-cat' + (cat.id === activeCategory ? ' active' : '');
+    btn.appendChild(document.createTextNode(cat.name));
+    var count = document.createElement('span');
+    count.className = 'cat-count';
+    count.appendChild(document.createTextNode(String(cat.count)));
+    btn.appendChild(count);
+    btn.onclick = function () { selectCategory(cat.id); };
+    el.categories.appendChild(btn);
+  }
+
+  function selectCategory(id) {
+    if (activeCategory === id) return;
+    activeCategory = id;
+    var btns = el.categories.getElementsByTagName('button');
+    for (var i = 0; i < btns.length; i++) toggleClass(btns[i], 'active', false);
+    renderCategories();
+    renderGallery();
+  }
+
   function renderGallery() {
     el.gallery.innerHTML = '';
-    for (var i = 0; i < catalog.length; i++) addGalleryItem(catalog[i]);
+    selectedItem = null;
+    var shown = 0;
+    for (var i = 0; i < catalog.length; i++) {
+      var entry = catalog[i];
+      if (activeCategory && entry.category !== activeCategory) continue;
+      var item = addGalleryItem(entry);
+      shown++;
+      // Conserva la seleccion si la imagen elegida sigue visible.
+      if (selected && selected.id === entry.id) { selectedItem = item; toggleClass(item, 'selected', true); }
+    }
+    if (shown === 0 && catalog.length > 0) show(el.galleryEmpty); else hide(el.galleryEmpty);
   }
 
   function addGalleryItem(entry) {
@@ -776,6 +831,8 @@
     el.screenGame = $('screen-game');
     el.gallery = $('gallery');
     el.catalogStatus = $('catalog-status');
+    el.categories = $('categories');
+    el.galleryEmpty = $('gallery-empty');
     el.optGuideOn = $('opt-guide-on');
     el.optGuideOff = $('opt-guide-off');
     el.pieceLabel = $('piece-label');

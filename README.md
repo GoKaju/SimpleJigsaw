@@ -7,6 +7,8 @@ imágenes y el frontend es HTML + CSS + JavaScript ES5 puro con Canvas 2D.
 ```
 SimpleJigsaw/
 ├── images-source/        # Aquí van tus imágenes originales (jpg, png, webp, heic, ...)
+│   ├── Dinosaurios/      # Cada subcarpeta es una categoría en la galería
+│   └── ...               # Las imágenes sueltas en la raíz caen en «Otras»
 ├── build.ts              # Genera thumbs, imágenes optimizadas y catalog.json
 ├── serve.ts              # Servidor estático local para probar en el iPad por WiFi
 ├── package.json          # pnpm + sharp
@@ -14,9 +16,9 @@ SimpleJigsaw/
 │   ├── index.html
 │   ├── style.css
 │   ├── app.js            # ES5, sin frameworks ni CDN
-│   ├── catalog.json      # Generado
-│   ├── thumbs/           # Generado (~300px, JPEG liviano)
-│   ├── images/           # Generado (alta calidad, máx. 1600px, JPEG optimizado)
+│   ├── catalog.json      # Generado (imágenes + categorías)
+│   ├── thumbs/           # Generado (~300px, JPEG liviano), una carpeta por categoría
+│   ├── images/           # Generado (alta calidad, máx. 1600px), una carpeta por categoría
 │   └── apple-touch-icon.png
 └── .github/workflows/
     ├── deploy-pages.yml  # Build + deploy a GitHub Pages en cada push a main
@@ -32,6 +34,21 @@ SimpleJigsaw/
 
 1. Copia las imágenes en `images-source/`. El nombre del archivo se convierte en el título
    (`noche_estrellada.jpg` → "Noche estrellada").
+
+   **Categorías**: cada subcarpeta de `images-source/` es una categoría, y el nombre de la
+   carpeta es el que se muestra en la galería (acentos y espacios incluidos). Las imágenes
+   sueltas en la raíz quedan en la categoría «Otras».
+
+   ```
+   images-source/
+   ├── Dinosaurios/       → categoría "Dinosaurios"
+   ├── Animales del mar/  → categoría "Animales del mar"
+   └── suelta.jpg         → categoría "Otras"
+   ```
+
+   Con dos o más categorías, la galería muestra botones para filtrar («Todas» + una por
+   carpeta, con el número de imágenes). Con una sola categoría no hay nada que filtrar y
+   solo se muestra su nombre.
 2. Ejecuta:
 
    ```sh
@@ -81,8 +98,11 @@ funciona con Safari 9. Si una imagen no carga tras actualizar el catálogo, reca
 ## Cómo funciona el frontend
 
 - **Catálogo**: `catalog.json` se pide con `XMLHttpRequest`; los thumbnails se muestran en una
-  galería. Al elegir uno, la imagen en alta calidad se descarga por XHR (`blob`) y se decodifica
-  con `URL.createObjectURL` (con fallback a `<img src>`).
+  galería agrupada por categorías. Al elegir uno, la imagen en alta calidad se descarga por XHR
+  (`blob`) y se decodifica con `URL.createObjectURL` (con fallback a `<img src>`).
+- **Categorías**: salen de las subcarpetas de `images-source/`. El build las escribe en
+  `catalog.json` con su nombre y su conteo, y replica la estructura en `docs/thumbs/` y
+  `docs/images/`.
 - **Piezas**: 12, 24, 48, 72 o 100 (botones grandes, pensados para un niño pequeño). Se elige
   filas × columnas según el aspect ratio para que las piezas sean casi cuadradas.
 - **Guía**: opción «Con guía» (imagen atenuada en el tablero) o «Sin guía» (el tablero muestra

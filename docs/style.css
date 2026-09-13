@@ -68,6 +68,23 @@ html, body {
 .panel h2 { margin: 0 0 10px; font-size: 18px; font-weight: 600; }
 .status { color: #ffd166; font-size: 14px; min-height: 1em; margin: 0 0 8px; }
 
+/* Filtro de categorias (una carpeta de images-source = una categoria). */
+.categories {
+  display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap;
+  margin: 0 -4px 10px;
+}
+.btn-cat {
+  margin: 4px; padding: 0 16px; min-height: 44px; line-height: 44px;
+  background: #3b4d7d; font-size: 16px; border-radius: 22px;
+}
+.btn-cat.active { background: #ffd166; color: #332a00; }
+.btn-cat .cat-count { opacity: 0.7; font-weight: 400; font-size: 14px; margin-left: 6px; }
+.cat-label {
+  display: inline-block; margin: 0 0 10px; padding: 0 14px;
+  height: 32px; line-height: 32px; border-radius: 16px;
+  background: #3b4d7d; font-size: 15px; font-weight: 600;
+}
+
 .gallery {
   display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap;
   margin: 0 -5px 8px;
