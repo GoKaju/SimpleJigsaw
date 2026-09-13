@@ -56,7 +56,11 @@ function slugify(name: string): string {
 }
 
 function humanName(fileBase: string): string {
-  const s = fileBase.replace(/[-_]+/g, " ").trim();
+  // Quita sufijos tipo hash de descargas ("Athenar_488f5cb9" -> "Athenar").
+  const s = fileBase
+    .replace(/[-_ ]+[0-9a-f]{6,}$/i, (m) => (/[a-f]/i.test(m) ? "" : m))
+    .replace(/[-_]+/g, " ")
+    .trim() || fileBase;
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
