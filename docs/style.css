@@ -1,0 +1,132 @@
+/* SimpleJigsaw - estilos compatibles con Safari iOS 9 */
+html, body {
+  margin: 0; padding: 0; height: 100%; overflow: hidden;
+  background: #1f2a44; color: #f4f6fb;
+  font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none; user-select: none;
+}
+* { box-sizing: border-box; }
+
+.hidden { display: none !important; }
+
+.screen {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  display: -webkit-flex; display: flex;
+  -webkit-flex-direction: column; flex-direction: column;
+}
+
+/* Barra superior */
+.bar {
+  height: 50px; min-height: 50px;
+  display: -webkit-flex; display: flex;
+  -webkit-align-items: center; align-items: center;
+  padding: 0 10px; background: #131b30;
+  border-bottom: 1px solid #0c111f;
+}
+.bar .title {
+  font-size: 20px; font-weight: 600; -webkit-flex: 1; flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 8px;
+}
+.bar .version { font-size: 12px; opacity: 0.5; }
+.game-bar .btn-small { margin-left: 6px; }
+.counter {
+  font-size: 18px; font-weight: 600; padding: 0 10px;
+  background: #2b3a5e; border-radius: 8px; height: 36px; line-height: 36px;
+}
+
+/* Catalogo */
+.catalog-body {
+  -webkit-flex: 1; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap;
+  padding: 10px;
+}
+.panel {
+  background: #26345a; border-radius: 12px; padding: 14px; margin: 6px;
+}
+.panel-gallery { -webkit-flex: 2 1 420px; flex: 2 1 420px; }
+.panel-options { -webkit-flex: 1 1 260px; flex: 1 1 260px; }
+.panel h2 { margin: 0 0 10px; font-size: 18px; font-weight: 600; }
+.status { color: #ffd166; font-size: 14px; min-height: 1em; margin: 0 0 8px; }
+
+.gallery {
+  display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap;
+  margin: 0 -5px 8px;
+}
+.thumb {
+  width: 150px; margin: 5px; background: #131b30; border-radius: 10px;
+  border: 3px solid transparent; overflow: hidden; cursor: pointer;
+}
+.thumb.selected { border-color: #ffd166; }
+.thumb img {
+  display: block; width: 100%; height: 112px; background: #000;
+  -o-object-fit: cover; object-fit: cover;
+}
+.thumb-name {
+  font-size: 13px; padding: 6px 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Botones (minimo 44px para dedos) */
+.btn {
+  display: inline-block; min-height: 44px; line-height: 44px; padding: 0 18px;
+  border: 0; border-radius: 10px; font-size: 17px; font-weight: 600;
+  color: #fff; background: #3b4d7d; cursor: pointer; text-align: center;
+  -webkit-appearance: none; appearance: none; margin: 4px 0;
+}
+.btn:active { opacity: 0.75; }
+.btn[disabled] { opacity: 0.4; }
+.btn-primary { background: #2ec4b6; color: #062a2a; width: 100%; font-size: 20px; min-height: 54px; line-height: 54px; }
+.btn-secondary { background: #4a5f93; width: 100%; }
+.btn-small { min-height: 36px; line-height: 36px; padding: 0 12px; font-size: 15px; }
+.btn.active { background: #ffd166; color: #332a00; }
+.file-btn { position: relative; overflow: hidden; }
+.file-btn input { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; font-size: 100px; }
+
+.presets { display: -webkit-flex; display: flex; margin: 0 -3px 6px; }
+.btn-preset { -webkit-flex: 1; flex: 1; margin: 0 3px; padding: 0; background: #3b4d7d; }
+
+input[type=range] {
+  width: 100%; height: 44px; margin: 6px 0; -webkit-appearance: none; appearance: none; background: transparent;
+}
+input[type=range]::-webkit-slider-runnable-track { height: 10px; background: #131b30; border-radius: 5px; }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 34px; height: 34px; border-radius: 50%;
+  background: #ffd166; margin-top: -12px; border: 0;
+}
+.piece-label { text-align: center; font-size: 22px; font-weight: 600; margin: 4px 0 12px; }
+.hint { font-size: 13px; opacity: 0.7; line-height: 1.4; }
+
+/* Juego */
+.play-area { position: relative; -webkit-flex: 1; flex: 1; overflow: hidden; background: #1f2a44; }
+.play-area canvas { position: absolute; left: 0; top: 0; }
+
+/* Overlays */
+.overlay {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10;
+  background: rgba(10, 14, 28, 0.72);
+  display: -webkit-flex; display: flex;
+  -webkit-align-items: center; align-items: center;
+  -webkit-justify-content: center; justify-content: center;
+}
+.card {
+  background: #26345a; border-radius: 16px; padding: 24px; width: 320px; max-width: 90%; text-align: center;
+}
+.card h2 { margin: 0 0 8px; font-size: 28px; }
+.card p { margin: 0 0 16px; font-size: 17px; }
+.card .btn { width: 100%; margin: 6px 0; }
+.card-loading { width: 240px; }
+.spinner {
+  width: 40px; height: 40px; margin: 0 auto 12px; border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.2); border-top-color: #ffd166;
+  -webkit-animation: spin 0.9s linear infinite; animation: spin 0.9s linear infinite;
+}
+@-webkit-keyframes spin { to { -webkit-transform: rotate(360deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 700px) {
+  .thumb { width: 45%; }
+  .thumb img { height: 90px; }
+  .bar .title { font-size: 17px; }
+}

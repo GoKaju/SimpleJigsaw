@@ -1,0 +1,21 @@
+{
+  "name": "simple-jigsaw",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Rompecabezas estatico para iPad mini 1 (iOS 9.3.5) servido por GitHub Pages",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "scripts": {
+    "build": "node build.ts",
+    "serve": "node serve.ts"
+  },
+  "dependencies": {
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0"
+  }
+}

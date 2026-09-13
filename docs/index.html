@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Rompecabezas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Rompecabezas">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Pantalla 1: catalogo y selector de piezas -->
+<div id="screen-catalog" class="screen">
+  <header class="bar">
+    <span class="title">Rompecabezas</span>
+    <span id="version" class="version"></span>
+  </header>
+  <div class="catalog-body">
+    <section class="panel panel-gallery">
+      <h2>1. Elige una imagen</h2>
+      <p id="catalog-status" class="status"></p>
+      <div id="gallery" class="gallery"></div>
+      <label class="btn btn-secondary file-btn">
+        Subir mi propia foto
+        <input id="file-input" type="file" accept="image/*">
+      </label>
+    </section>
+    <section class="panel panel-options">
+      <h2>2. &iquest;Cu&aacute;ntas piezas?</h2>
+      <div class="presets">
+        <button class="btn btn-preset" data-n="12">12</button>
+        <button class="btn btn-preset" data-n="24">24</button>
+        <button class="btn btn-preset" data-n="48">48</button>
+        <button class="btn btn-preset" data-n="72">72</button>
+        <button class="btn btn-preset" data-n="100">100</button>
+      </div>
+      <input id="piece-range" type="range" min="12" max="100" step="1" value="24">
+      <div id="piece-label" class="piece-label">24 piezas</div>
+      <button id="btn-play" class="btn btn-primary" disabled>Jugar</button>
+      <p class="hint">Consejo: para guardar la app en el iPad, toca el bot&oacute;n Compartir de Safari y elige &laquo;Agregar a pantalla de inicio&raquo;.</p>
+    </section>
+  </div>
+</div>
+
+<!-- Pantalla 2: juego -->
+<div id="screen-game" class="screen hidden">
+  <header class="bar game-bar">
+    <button id="btn-back" class="btn btn-small">&lsaquo; Im&aacute;genes</button>
+    <span id="game-title" class="title"></span>
+    <span id="counter" class="counter">0 / 0</span>
+    <button id="btn-guide" class="btn btn-small active">Gu&iacute;a</button>
+    <button id="btn-shuffle" class="btn btn-small">Mezclar</button>
+  </header>
+  <div id="play-area" class="play-area">
+    <canvas id="bg"></canvas>
+    <canvas id="fg"></canvas>
+  </div>
+  <div id="overlay" class="overlay hidden">
+    <div class="card">
+      <h2 id="overlay-title">&iexcl;Lo lograste!</h2>
+      <p id="overlay-msg"></p>
+      <button id="btn-again" class="btn btn-primary">Mezclar de nuevo</button>
+      <button id="btn-other" class="btn btn-secondary">Elegir otra imagen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cargando -->
+<div id="loading" class="overlay hidden">
+  <div class="card card-loading">
+    <div class="spinner"></div>
+    <p id="loading-text">Cargando&hellip;</p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

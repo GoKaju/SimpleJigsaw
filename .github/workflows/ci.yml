@@ -1,0 +1,27 @@
+# Verificacion en pull requests: el build corre y app.js sigue siendo ES5 valido.
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Sintaxis de app.js
+        run: node --check docs/app.js
+      - name: Sin construcciones ES6 en app.js (Safari iOS 9)
+        run: |
+          if grep -nE '\b(let|const|class)\s|=>|`|\bPromise\b|\.\.\.' docs/app.js; then
+            echo "app.js contiene sintaxis ES6"; exit 1
+          fi
+          echo "app.js es ES5"
