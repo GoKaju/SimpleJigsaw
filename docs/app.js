@@ -6,20 +6,22 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.0.0';
+  var VERSION = '1.1.0';
   var MAX_SRC = 1600;          // lado maximo de la imagen fuente (fotos subidas)
   var TAB = 0.1;               // tamano del tab relativo al lado de la pieza (altura = 3*TAB)
   var MARGIN_FACTOR = 0.36;    // margen alrededor de cada pieza para que quepan los tabs
   var MIN_PIECES = 12, MAX_PIECES = 100;
   var GHOST_ALPHA = 0.25;
+  var COLORS = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#9b5de5', '#ff8c42', '#ffffff'];
 
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var catalog = [];            // entradas de catalog.json + fotos subidas
+  var catalog = [];            // entradas de catalog.json
   var selected = null;         // entrada elegida
   var selectedItem = null;     // nodo DOM del thumbnail elegido
-  var sourceCache = {};        // id -> Image | Canvas
+  var sourceCache = {};        // id -> Image
+  var guideDefault = true;     // opcion elegida en el catalogo
+  var confetti = null;         // animacion de victoria
   var targetPieces = 24;
-  var uploadCount = 0;
   var game = null;
   var el = {};
   var staticLayer = null;      // canvas fuera de pantalla: tablero + piezas encajadas
@@ -56,8 +58,9 @@
     c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   function requestFrame(fn) {
-    var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
-    if (raf) raf(fn); else setTimeout(fn, 16);
+    if (window.requestAnimationFrame) window.requestAnimationFrame(fn);
+    else if (window.webkitRequestAnimationFrame) window.webkitRequestAnimationFrame(fn);
+    else setTimeout(fn, 16);
   }
 
   function xhrGet(url, responseType, onOk, onErr, onProgress) {
@@ -98,107 +101,6 @@
       img.onerror = function () { try { URLObj.revokeObjectURL(objUrl); } catch (e) {} loadImageTag(url, onOk, onErr); };
       img.src = objUrl;
     }, function () { loadImageTag(url, onOk, onErr); }, onProgress);
-  }
-
-  // ------------------------------------------------------------------
-  // Fotos subidas: orientacion EXIF y correccion del "squash" de iOS
-  // ------------------------------------------------------------------
-  function readOrientation(buffer) {
-    var view = new DataView(buffer);
-    if (view.byteLength < 4 || view.getUint16(0, false) !== 0xFFD8) return 1;
-    var length = view.byteLength, offset = 2;
-    while (offset < length - 1) {
-      var marker = view.getUint16(offset, false);
-      offset += 2;
-      if (marker === 0xFFE1) {
-        if (offset + 10 > length || view.getUint32(offset + 2, false) !== 0x45786966) return 1;
-        var little = view.getUint16(offset + 8, false) === 0x4949;
-        var tiff = offset + 8;
-        var firstIFD = view.getUint32(tiff + 4, little);
-        if (tiff + firstIFD + 2 > length) return 1;
-        var tags = view.getUint16(tiff + firstIFD, little);
-        for (var i = 0; i < tags; i++) {
-          var entry = tiff + firstIFD + 2 + i * 12;
-          if (entry + 12 > length) return 1;
-          if (view.getUint16(entry, little) === 0x0112) return view.getUint16(entry + 8, little);
-        }
-        return 1;
-      } else if ((marker & 0xFF00) !== 0xFF00) {
-        return 1;
-      } else {
-        if (offset + 2 > length) return 1;
-        offset += view.getUint16(offset, false);
-      }
-    }
-    return 1;
-  }
-
-  function browserAutoOrients() {
-    try { return !!(window.CSS && CSS.supports && CSS.supports('image-orientation', 'from-image')); }
-    catch (e) { return false; }
-  }
-
-  function readOrientationFromFile(file, isJpeg, cb) {
-    if (!isJpeg || !window.DataView || !file.slice || browserAutoOrients()) { cb(1); return; }
-    var reader = new FileReader();
-    reader.onload = function () { var o = 1; try { o = readOrientation(reader.result); } catch (e) {} cb(o); };
-    reader.onerror = function () { cb(1); };
-    reader.readAsArrayBuffer(file.slice(0, 131072));
-  }
-
-  // iOS antiguo "aplasta" verticalmente los JPEG grandes al dibujarlos en canvas.
-  // Detectamos la proporcion real dibujando en un canvas de 1px de ancho.
-  function detectVerticalSquash(img, ih) {
-    var c = document.createElement('canvas');
-    c.width = 1; c.height = ih;
-    var ctx = c.getContext('2d');
-    ctx.drawImage(img, 0, 0);
-    var data;
-    try { data = ctx.getImageData(0, 0, 1, ih).data; } catch (e) { return 1; }
-    var sy = 0, ey = ih, py = ih;
-    while (py > sy) {
-      var alpha = data[(py - 1) * 4 + 3];
-      if (alpha === 0) ey = py; else sy = py;
-      py = (ey + sy) >> 1;
-    }
-    var ratio = py / ih;
-    return ratio === 0 ? 1 : ratio;
-  }
-
-  function normalizeUpload(img, orientation, isJpeg) {
-    var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
-    var ratio = isJpeg ? detectVerticalSquash(img, ih) : 1;
-    var scale = Math.min(1, MAX_SRC / Math.max(iw, ih));
-    var w = Math.round(iw * scale), h = Math.round(ih * scale);
-    var swap = orientation >= 5;
-    // Canvas a 1:1 (sin dpr) para no duplicar memoria en pantallas retina.
-    var c = document.createElement('canvas');
-    c.width = swap ? h : w;
-    c.height = swap ? w : h;
-    var ctx = c.getContext('2d');
-    switch (orientation) {
-      case 2: ctx.translate(w, 0); ctx.scale(-1, 1); break;
-      case 3: ctx.translate(w, h); ctx.rotate(Math.PI); break;
-      case 4: ctx.translate(0, h); ctx.scale(1, -1); break;
-      case 5: ctx.rotate(0.5 * Math.PI); ctx.scale(1, -1); break;
-      case 6: ctx.rotate(0.5 * Math.PI); ctx.translate(0, -h); break;
-      case 7: ctx.rotate(0.5 * Math.PI); ctx.translate(w, -h); ctx.scale(-1, 1); break;
-      case 8: ctx.rotate(-0.5 * Math.PI); ctx.translate(-w, 0); break;
-    }
-    ctx.drawImage(img, 0, 0, iw, ih, 0, 0, w, h / ratio);
-    c.logicalWidth = c.width;
-    c.logicalHeight = c.height;
-    return c;
-  }
-
-  function makeThumb(source, maxSide) {
-    var sw = srcWidth(source), sh = srcHeight(source);
-    var s = Math.min(1, maxSide / Math.max(sw, sh));
-    var c = document.createElement('canvas');
-    c.width = Math.max(1, Math.round(sw * s));
-    c.height = Math.max(1, Math.round(sh * s));
-    c.getContext('2d').drawImage(source, 0, 0, c.width, c.height);
-    try { return c.toDataURL('image/jpeg', 0.7); } catch (e) { return c.toDataURL(); }
   }
 
   // Tamano en pixeles reales del bitmap (lo que drawImage usa como sistema fuente).
@@ -269,56 +171,19 @@
 
   function setTargetPieces(n) {
     targetPieces = clamp(parseInt(n, 10) || MIN_PIECES, MIN_PIECES, MAX_PIECES);
-    el.pieceRange.value = targetPieces;
     updatePieceLabel();
   }
 
-  function onFileChosen() {
-    var file = el.fileInput.files && el.fileInput.files[0];
-    if (!file) return;
-    showLoading('Procesando foto…');
-    var isJpeg = /jpe?g$/i.test(file.type || '') || /\.jpe?g$/i.test(file.name || '');
-    readOrientationFromFile(file, isJpeg, function (orientation) {
-      var reader = new FileReader();
-      reader.onload = function () {
-        var img = new Image();
-        img.onload = function () {
-          var canvas;
-          try { canvas = normalizeUpload(img, orientation, isJpeg); }
-          catch (e) { hideLoading(); setText(el.catalogStatus, 'No se pudo procesar la foto.'); return; }
-          uploadCount++;
-          var id = 'upload-' + uploadCount;
-          var entry = {
-            id: id,
-            name: 'Mi foto ' + uploadCount,
-            thumb: makeThumb(canvas, 300),
-            image: null,
-            width: canvas.logicalWidth,
-            height: canvas.logicalHeight,
-            upload: true
-          };
-          sourceCache[id] = canvas;
-          catalog.push(entry);
-          var item = addGalleryItem(entry);
-          selectEntry(entry, item);
-          hideLoading();
-          setText(el.catalogStatus, '');
-          try { el.fileInput.value = ''; } catch (e) {}
-        };
-        img.onerror = function () { hideLoading(); setText(el.catalogStatus, 'No se pudo leer la imagen.'); };
-        img.src = reader.result;
-      };
-      reader.onerror = function () { hideLoading(); setText(el.catalogStatus, 'No se pudo leer el archivo.'); };
-      reader.readAsDataURL(file);
-    });
+  function setGuideDefault(on) {
+    guideDefault = !!on;
+    toggleClass(el.optGuideOn, 'active', guideDefault);
+    toggleClass(el.optGuideOff, 'active', !guideDefault);
   }
 
   function getSource(entry, ok, err) {
     if (sourceCache[entry.id]) { ok(sourceCache[entry.id]); return; }
-    // Liberamos imagenes del catalogo cargadas antes (las fotos subidas se conservan).
-    for (var k in sourceCache) {
-      if (sourceCache.hasOwnProperty(k) && k.indexOf('upload-') !== 0) delete sourceCache[k];
-    }
+    // Liberamos la imagen cargada antes para no acumular memoria.
+    sourceCache = {};
     loadImageXHR(entry.image, function (img) {
       sourceCache[entry.id] = img;
       ok(img);
@@ -434,14 +299,15 @@
   // Partida
   // ------------------------------------------------------------------
   function newGame(src, entry) {
-    var iw = src.logicalWidth || srcWidth(src), ih = src.logicalHeight || srcHeight(src);
+    var iw = srcWidth(src), ih = srcHeight(src);
     var grid = computeGrid(targetPieces, iw / ih);
     game = {
       src: src, iw: srcWidth(src), ih: srcHeight(src), logicalW: iw, logicalH: ih,
       rows: grid.rows, cols: grid.cols, entry: entry,
       hEdges: [], vEdges: [], pieces: [], loose: [],
-      guide: true, drag: null, won: false
+      guide: guideDefault, drag: null, won: false
     };
+    stopConfetti();
     var r, c;
     for (r = 1; r < game.rows; r++) {
       game.hEdges[r] = [];
@@ -457,7 +323,7 @@
       }
     }
     setText(el.gameTitle, entry.name);
-    toggleClass(el.btnGuide, 'active', true);
+    toggleClass(el.btnGuide, 'active', game.guide);
     hide(el.overlay);
     layoutGame(false);
     scatter();
@@ -553,6 +419,7 @@
     for (var i = 0; i < game.pieces.length; i++) game.pieces[i].locked = false;
     game.won = false;
     game.drag = null;
+    stopConfetti();
     hide(el.overlay);
     scatter();
     rebuildStatic();
@@ -564,6 +431,33 @@
   // ------------------------------------------------------------------
   // Dibujo
   // ------------------------------------------------------------------
+  // Textura para el tablero sin guia: fondo claro con rayas diagonales y lunares de colores.
+  var textureTile = null;
+  function getTexture(ctx) {
+    if (!textureTile) {
+      var size = 64;
+      var tile = document.createElement('canvas');
+      tile.width = size; tile.height = size;
+      var t = tile.getContext('2d');
+      t.fillStyle = '#e9edf6';
+      t.fillRect(0, 0, size, size);
+      t.strokeStyle = 'rgba(120, 140, 190, 0.18)';
+      t.lineWidth = 6;
+      for (var i = -size; i < size * 2; i += 16) {
+        t.beginPath(); t.moveTo(i, 0); t.lineTo(i + size, size); t.stroke();
+      }
+      var dots = [[16, 16, '#ffd166'], [48, 16, '#06d6a0'], [16, 48, '#118ab2'], [48, 48, '#ef476f']];
+      t.globalAlpha = 0.35;
+      for (var j = 0; j < dots.length; j++) {
+        t.fillStyle = dots[j][2];
+        t.beginPath(); t.arc(dots[j][0], dots[j][1], 5, 0, Math.PI * 2); t.fill();
+      }
+      t.globalAlpha = 1;
+      textureTile = tile;
+    }
+    return ctx.createPattern(textureTile, 'repeat');
+  }
+
   // Capa estatica: fondo del tablero (+ imagen guia) + piezas ya encajadas.
   function rebuildStatic() {
     var ctx = staticLayer.getContext('2d');
@@ -574,6 +468,14 @@
       ctx.globalAlpha = GHOST_ALPHA;
       ctx.drawImage(game.src, 0, 0, game.iw, game.ih, game.bx, game.by, game.bw, game.bh);
       ctx.globalAlpha = 1;
+    } else {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(game.bx, game.by, game.bw, game.bh);
+      ctx.clip();
+      ctx.fillStyle = getTexture(ctx);
+      ctx.fillRect(game.bx, game.by, game.bw, game.bh);
+      ctx.restore();
     }
     ctx.strokeStyle = 'rgba(255,255,255,0.35)';
     ctx.lineWidth = 2;
@@ -689,7 +591,69 @@
   function win() {
     game.won = true;
     setText(el.overlayMsg, game.pieces.length + ' piezas · ' + game.entry.name);
-    setTimeout(function () { show(el.overlay); }, 500);
+    startConfetti();
+    setTimeout(function () { if (game && game.won) show(el.overlay); }, 700);
+  }
+
+  // Confeti y estrellas sobre la capa superior; sigue hasta que se pulse un boton.
+  function startConfetti() {
+    var W = game.W, H = game.H, parts = [];
+    var count = Math.min(110, Math.max(60, Math.round(W * H / 7000)));
+    for (var i = 0; i < count; i++) parts.push(makeParticle(W, H, true));
+    confetti = { parts: parts, start: new Date().getTime(), lastTime: 0, W: W, H: H };
+    requestFrame(confettiFrame);
+  }
+  function makeParticle(W, H, initial) {
+    var star = Math.random() < 0.3;
+    return {
+      x: rnd(0, W), y: initial ? rnd(-H * 0.6, H * 0.7) : rnd(-40, -10),
+      vx: rnd(-40, 40), vy: rnd(90, 220),
+      rot: rnd(0, Math.PI * 2), vr: rnd(-4, 4),
+      size: star ? rnd(10, 20) : rnd(9, 16),
+      star: star, color: COLORS[Math.floor(Math.random() * COLORS.length)]
+    };
+  }
+  function resetParticle(p, W, H) {
+    var np = makeParticle(W, H, false);
+    for (var k in np) if (np.hasOwnProperty(k)) p[k] = np[k];
+  }
+  function drawStar(ctx, r) {
+    ctx.beginPath();
+    for (var i = 0; i < 10; i++) {
+      var rad = (i % 2 === 0) ? r : r * 0.45;
+      var a = i * Math.PI / 5 - Math.PI / 2;
+      if (i === 0) ctx.moveTo(Math.cos(a) * rad, Math.sin(a) * rad);
+      else ctx.lineTo(Math.cos(a) * rad, Math.sin(a) * rad);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+  function confettiFrame() {
+    if (!confetti || !game) return;
+    var now = new Date().getTime();
+    var dt = confetti.lastTime ? Math.min(0.05, (now - confetti.lastTime) / 1000) : 0.016;
+    confetti.lastTime = now;
+    var ctx = el.fg.getContext('2d');
+    ctx.clearRect(0, 0, confetti.W, confetti.H);
+    for (var i = 0; i < confetti.parts.length; i++) {
+      var p = confetti.parts[i];
+      p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+      p.vx += Math.sin(now / 300 + i) * 30 * dt;
+      if (p.y > confetti.H + 20) resetParticle(p, confetti.W, confetti.H);
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      if (p.star) drawStar(ctx, p.size);
+      else ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      ctx.restore();
+    }
+    requestFrame(confettiFrame);
+  }
+  function stopConfetti() {
+    if (!confetti) return;
+    confetti = null;
+    if (el.fg) el.fg.getContext('2d').clearRect(0, 0, el.fg.width, el.fg.height);
   }
 
   function findTouch(list, id) {
@@ -751,6 +715,7 @@
   }
 
   function backToCatalog() {
+    stopConfetti();
     game = null;
     staticLayer = null;
     hide(el.overlay);
@@ -763,6 +728,7 @@
       resizeTimer = null;
       if (!game || /\bhidden\b/.test(el.screenGame.className)) return;
       game.drag = null;
+      stopConfetti();
       layoutGame(true);
       rebuildStatic();
       clearFg();
@@ -778,8 +744,8 @@
     el.screenGame = $('screen-game');
     el.gallery = $('gallery');
     el.catalogStatus = $('catalog-status');
-    el.fileInput = $('file-input');
-    el.pieceRange = $('piece-range');
+    el.optGuideOn = $('opt-guide-on');
+    el.optGuideOff = $('opt-guide-off');
     el.pieceLabel = $('piece-label');
     el.btnPlay = $('btn-play');
     el.presets = document.querySelectorAll('.btn-preset');
@@ -799,15 +765,14 @@
     el.loadingText = $('loading-text');
     setText($('version'), 'v' + VERSION);
 
-    el.pieceRange.addEventListener('input', function () { setTargetPieces(el.pieceRange.value); }, false);
-    el.pieceRange.addEventListener('change', function () { setTargetPieces(el.pieceRange.value); }, false);
+    el.optGuideOn.addEventListener('click', function () { setGuideDefault(true); }, false);
+    el.optGuideOff.addEventListener('click', function () { setGuideDefault(false); }, false);
     for (var i = 0; i < el.presets.length; i++) {
       el.presets[i].addEventListener('click', function (e) {
         setTargetPieces(e.currentTarget.getAttribute('data-n'));
       }, false);
     }
     el.btnPlay.addEventListener('click', startGame, false);
-    el.fileInput.addEventListener('change', onFileChosen, false);
     el.btnBack.addEventListener('click', backToCatalog, false);
     el.btnOther.addEventListener('click', backToCatalog, false);
     el.btnShuffle.addEventListener('click', reshuffle, false);
@@ -835,11 +800,12 @@
     window.addEventListener('orientationchange', onResize, false);
 
     setTargetPieces(targetPieces);
+    setGuideDefault(true);
     loadCatalog();
   }
 
   // Hook minimo para depuracion desde la consola de Safari/Chrome.
-  window.SimpleJigsaw = { version: VERSION, state: function () { return game; } };
+  window.SimpleJigsaw = { version: VERSION, state: function () { return game; }, confetti: function () { return confetti; } };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, false);
   else init();

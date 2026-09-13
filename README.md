@@ -83,11 +83,10 @@ funciona con Safari 9. Si una imagen no carga tras actualizar el catálogo, reca
 - **Catálogo**: `catalog.json` se pide con `XMLHttpRequest`; los thumbnails se muestran en una
   galería. Al elegir uno, la imagen en alta calidad se descarga por XHR (`blob`) y se decodifica
   con `URL.createObjectURL` (con fallback a `<img src>`).
-- **Foto propia**: `<input type="file" accept="image/*">` + `FileReader`. Todo ocurre en el
-  dispositivo. Se lee la orientación EXIF y se corrige el "aplastado" vertical que Safari iOS
-  antiguo aplica a JPEG grandes; la foto se reduce a 1600px.
-- **Piezas**: de 12 a 100. Se elige filas × columnas según el aspect ratio para que las
-  piezas sean casi cuadradas.
+- **Piezas**: 12, 24, 48, 72 o 100 (botones grandes, pensados para un niño pequeño). Se elige
+  filas × columnas según el aspect ratio para que las piezas sean casi cuadradas.
+- **Guía**: opción «Con guía» (imagen atenuada en el tablero) o «Sin guía» (el tablero muestra
+  una textura de colores). También se puede alternar durante la partida con el botón Guía.
 - **Forma real de rompecabezas**: cada borde interior es una curva de 3 tramos `bezierCurveTo`
   con tab o muesca aleatoria. El borde se define una sola vez en coordenadas compartidas y la
   pieza vecina lo recorre al revés, por lo que encajan exactamente.
@@ -96,7 +95,7 @@ funciona con Safari 9. Si una imagen no carga tras actualizar el catálogo, reca
   pieza; el superior dibuja únicamente la pieza que se arrastra en cada movimiento.
 - **Interacción**: eventos táctiles (`touchstart/move/end`) y de mouse, hit-test por alpha del
   canvas de la pieza, snap cuando la pieza queda a menos del 30 % de su tamaño del destino.
-- **Victoria**: al encajar todas las piezas aparece el mensaje con botones «Mezclar de nuevo» y
-  «Elegir otra imagen». El botón **Guía** muestra u oculta la imagen atenuada en el tablero.
+- **Victoria**: al encajar todas las piezas cae una lluvia de confeti y estrellas sobre el canvas
+  y aparece un mensaje colorido con botones «Mezclar de nuevo» y «Elegir otra imagen».
 
 Para depurar desde la consola: `SimpleJigsaw.state()` devuelve el estado de la partida.
