@@ -86,7 +86,10 @@ funciona con Safari 9. Si una imagen no carga tras actualizar el catálogo, reca
 - **Piezas**: 12, 24, 48, 72 o 100 (botones grandes, pensados para un niño pequeño). Se elige
   filas × columnas según el aspect ratio para que las piezas sean casi cuadradas.
 - **Guía**: opción «Con guía» (imagen atenuada en el tablero) o «Sin guía» (el tablero muestra
-  una textura de colores). También se puede alternar durante la partida con el botón Guía.
+  una textura de colores). Se elige antes de jugar y no se puede cambiar durante la partida.
+- **Pantalla de juego sin distracciones**: el tablero ocupa toda la pantalla. Solo hay un contador
+  discreto en una esquina y un punto gris en la otra. Salir o mezclar exige **mantener pulsado**
+  ese punto casi un segundo, para que un niño pequeño no interrumpa la partida sin querer.
 - **Forma real de rompecabezas**: cada borde interior es una curva de 3 tramos `bezierCurveTo`
   con tab o muesca aleatoria. El borde se define una sola vez en coordenadas compartidas y la
   pieza vecina lo recorre al revés, por lo que encajan exactamente.

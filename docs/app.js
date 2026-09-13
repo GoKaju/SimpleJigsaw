@@ -6,12 +6,13 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.1.0';
+  var VERSION = '1.2.0';
   var MAX_SRC = 1600;          // lado maximo de la imagen fuente (fotos subidas)
   var TAB = 0.1;               // tamano del tab relativo al lado de la pieza (altura = 3*TAB)
   var MARGIN_FACTOR = 0.36;    // margen alrededor de cada pieza para que quepan los tabs
   var MIN_PIECES = 12, MAX_PIECES = 100;
   var GHOST_ALPHA = 0.25;
+  var MENU_HOLD_MS = 900;      // pulsacion larga para abrir el menu de adultos
   var COLORS = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#9b5de5', '#ff8c42', '#ffffff'];
 
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -322,8 +323,6 @@
         game.pieces.push({ r: r, c: c, locked: false, x: 0, y: 0, nx: Math.random(), ny: Math.random() });
       }
     }
-    setText(el.gameTitle, entry.name);
-    toggleClass(el.btnGuide, 'active', game.guide);
     hide(el.overlay);
     layoutGame(false);
     scatter();
@@ -420,6 +419,7 @@
     game.won = false;
     game.drag = null;
     stopConfetti();
+    closeMenu();
     hide(el.overlay);
     scatter();
     rebuildStatic();
@@ -689,6 +689,37 @@
   // ------------------------------------------------------------------
   // Pantallas
   // ------------------------------------------------------------------
+  // Menu de adultos: exige mantener pulsado para que el nino no salga sin querer.
+  var holdTimer = null;
+
+  function onMenuHoldStart(e) {
+    if (e.preventDefault) e.preventDefault();
+    if (holdTimer) return;
+    toggleClass(el.btnMenu, 'holding', true);
+    show(el.menuHint);
+    holdTimer = setTimeout(function () {
+      holdTimer = null;
+      toggleClass(el.btnMenu, 'holding', false);
+      hide(el.menuHint);
+      openMenu();
+    }, MENU_HOLD_MS);
+  }
+
+  function onMenuHoldEnd(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+    toggleClass(el.btnMenu, 'holding', false);
+    hide(el.menuHint);
+  }
+
+  function openMenu() {
+    if (!game || game.won) return;
+    if (game.drag) { game.drag = null; clearFg(); redrawBg(null); }
+    show(el.menu);
+  }
+
+  function closeMenu() { hide(el.menu); }
+
   function showScreen(name) {
     if (name === 'game') { hide(el.screenCatalog); show(el.screenGame); }
     else { hide(el.screenGame); show(el.screenCatalog); }
@@ -716,6 +747,7 @@
 
   function backToCatalog() {
     stopConfetti();
+    closeMenu();
     game = null;
     staticLayer = null;
     hide(el.overlay);
@@ -748,15 +780,17 @@
     el.optGuideOff = $('opt-guide-off');
     el.pieceLabel = $('piece-label');
     el.btnPlay = $('btn-play');
-    el.presets = document.querySelectorAll('.btn-preset');
+    el.presets = document.querySelectorAll('#piece-presets .btn-preset');
     el.playArea = $('play-area');
     el.bg = $('bg');
     el.fg = $('fg');
     el.btnBack = $('btn-back');
-    el.btnGuide = $('btn-guide');
+    el.btnMenu = $('btn-menu');
+    el.menu = $('menu');
+    el.menuHint = $('menu-hint');
+    el.btnResume = $('btn-resume');
     el.btnShuffle = $('btn-shuffle');
     el.counter = $('counter');
-    el.gameTitle = $('game-title');
     el.overlay = $('overlay');
     el.overlayMsg = $('overlay-msg');
     el.btnAgain = $('btn-again');
@@ -777,13 +811,13 @@
     el.btnOther.addEventListener('click', backToCatalog, false);
     el.btnShuffle.addEventListener('click', reshuffle, false);
     el.btnAgain.addEventListener('click', reshuffle, false);
-    el.btnGuide.addEventListener('click', function () {
-      if (!game) return;
-      game.guide = !game.guide;
-      toggleClass(el.btnGuide, 'active', game.guide);
-      rebuildStatic();
-      redrawBg(game.drag ? game.drag.piece : null);
-    }, false);
+    el.btnResume.addEventListener('click', closeMenu, false);
+    el.btnMenu.addEventListener('touchstart', onMenuHoldStart, false);
+    el.btnMenu.addEventListener('touchend', onMenuHoldEnd, false);
+    el.btnMenu.addEventListener('touchcancel', onMenuHoldEnd, false);
+    el.btnMenu.addEventListener('mousedown', onMenuHoldStart, false);
+    el.btnMenu.addEventListener('mouseup', onMenuHoldEnd, false);
+    el.btnMenu.addEventListener('mouseleave', onMenuHoldEnd, false);
 
     el.fg.addEventListener('touchstart', onTouchStart, false);
     el.fg.addEventListener('touchmove', onTouchMove, false);
