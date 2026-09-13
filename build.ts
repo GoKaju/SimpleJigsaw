@@ -9,7 +9,7 @@
  * Ejecutar: node build.ts   (Node >= 22.6 con TypeScript nativo)  o  pnpm build
  */
 import { readdir, mkdir, writeFile, rm, stat } from "node:fs/promises";
-import { basename, extname, join } from "node:path";
+import { basename, dirname, extname, join } from "node:path";
 import sharp from "sharp";
 
 const ROOT = import.meta.dirname;
@@ -29,9 +29,14 @@ const THUMB_QUALITY = 70;
 
 const SUPPORTED = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".tif", ".tiff", ".avif", ".heic", ".heif"]);
 
+// Categoria por defecto para las imagenes que estan sueltas en la raiz.
+const ROOT_CATEGORY = "Otras";
+
 interface CatalogEntry {
   id: string;
   name: string;
+  category: string;      // id de la categoria (slug)
+  categoryName: string;  // nombre legible (el de la carpeta)
   thumb: string;
   image: string;
   width: number;
@@ -40,10 +45,23 @@ interface CatalogEntry {
   thumbHeight: number;
 }
 
+interface CatalogCategory {
+  id: string;
+  name: string;
+  count: number;
+}
+
 interface Catalog {
   generatedAt: string;
   count: number;
+  categories: CatalogCategory[];
   images: CatalogEntry[];
+}
+
+interface SourceFile {
+  path: string;          // ruta absoluta del archivo original
+  file: string;          // nombre del archivo
+  categoryName: string;  // nombre de la carpeta (o ROOT_CATEGORY)
 }
 
 function slugify(name: string): string {
@@ -73,24 +91,51 @@ async function ensureDirs(): Promise<void> {
   await mkdir(IMAGES_DIR, { recursive: true });
 }
 
-async function listSources(): Promise<string[]> {
+// Cada subcarpeta de images-source es una categoria. Las imagenes sueltas en la
+// raiz caen en ROOT_CATEGORY. Solo se mira un nivel de profundidad.
+async function listSources(): Promise<SourceFile[]> {
   const entries = await readdir(SOURCE_DIR, { withFileTypes: true });
-  return entries
-    .filter((e) => e.isFile() && SUPPORTED.has(extname(e.name).toLowerCase()) && !e.name.startsWith("."))
-    .map((e) => e.name)
-    .sort((a, b) => a.localeCompare(b, "es"));
+  const out: SourceFile[] = [];
+
+  function isImage(name: string): boolean {
+    return SUPPORTED.has(extname(name).toLowerCase()) && !name.startsWith(".");
+  }
+
+  for (const entry of entries) {
+    if (entry.isFile() && isImage(entry.name)) {
+      out.push({ path: join(SOURCE_DIR, entry.name), file: entry.name, categoryName: ROOT_CATEGORY });
+    } else if (entry.isDirectory() && !entry.name.startsWith(".")) {
+      const dir = join(SOURCE_DIR, entry.name);
+      const inner = await readdir(dir, { withFileTypes: true });
+      for (const f of inner) {
+        if (f.isFile() && isImage(f.name)) {
+          out.push({ path: join(dir, f.name), file: f.name, categoryName: entry.name });
+        }
+      }
+    }
+  }
+
+  return out.sort((a, b) =>
+    a.categoryName.localeCompare(b.categoryName, "es") || a.file.localeCompare(b.file, "es"),
+  );
 }
 
-async function processImage(file: string, usedIds: Set<string>): Promise<CatalogEntry> {
-  const base = basename(file, extname(file));
+async function processImage(source: SourceFile, usedIds: Set<string>): Promise<CatalogEntry> {
+  const base = basename(source.file, extname(source.file));
+  const categoryId = slugify(source.categoryName);
   let id = slugify(base);
   let n = 2;
   while (usedIds.has(id)) id = `${slugify(base)}-${n++}`;
   usedIds.add(id);
 
-  const src = join(SOURCE_DIR, file);
-  const hqOut = join(IMAGES_DIR, `${id}.jpg`);
-  const thumbOut = join(THUMBS_DIR, `${id}.jpg`);
+  // Las salidas replican la estructura de carpetas: docs/images/<categoria>/<id>.jpg
+  const src = source.path;
+  const hqRel = `images/${categoryId}/${id}.jpg`;
+  const thumbRel = `thumbs/${categoryId}/${id}.jpg`;
+  const hqOut = join(DOCS_DIR, hqRel);
+  const thumbOut = join(DOCS_DIR, thumbRel);
+  await mkdir(dirname(hqOut), { recursive: true });
+  await mkdir(dirname(thumbOut), { recursive: true });
 
   // rotate() sin argumentos aplica la orientacion EXIF y luego la descarta.
   const hq = sharp(src).rotate().resize({
@@ -113,14 +158,16 @@ async function processImage(file: string, usedIds: Set<string>): Promise<Catalog
   const hqSize = (await stat(hqOut)).size;
   const thSize = (await stat(thumbOut)).size;
   console.log(
-    `  ${file} -> ${id}.jpg  ${hqInfo.width}x${hqInfo.height} (${(hqSize / 1024).toFixed(0)} KB) | thumb ${thumbInfo.width}x${thumbInfo.height} (${(thSize / 1024).toFixed(0)} KB)`,
+    `    ${source.file} -> ${hqRel}  ${hqInfo.width}x${hqInfo.height} (${(hqSize / 1024).toFixed(0)} KB) | thumb ${thumbInfo.width}x${thumbInfo.height} (${(thSize / 1024).toFixed(0)} KB)`,
   );
 
   return {
     id,
     name: humanName(base),
-    thumb: `thumbs/${id}.jpg`,
-    image: `images/${id}.jpg`,
+    category: categoryId,
+    categoryName: source.categoryName,
+    thumb: thumbRel,
+    image: hqRel,
     width: hqInfo.width,
     height: hqInfo.height,
     thumbWidth: thumbInfo.width,
@@ -141,22 +188,42 @@ async function main(): Promise<void> {
 
   const usedIds = new Set<string>();
   const images: CatalogEntry[] = [];
-  for (const file of files) {
+  let currentCategory = "";
+  for (const source of files) {
+    if (source.categoryName !== currentCategory) {
+      currentCategory = source.categoryName;
+      console.log(`  [${currentCategory}]`);
+    }
     try {
-      images.push(await processImage(file, usedIds));
+      images.push(await processImage(source, usedIds));
     } catch (err) {
-      console.error(`  ERROR procesando ${file}:`, (err as Error).message);
+      console.error(`    ERROR procesando ${source.file}:`, (err as Error).message);
       process.exitCode = 1;
     }
+  }
+
+  // Categorias en el orden en que aparecen, con su conteo.
+  const categories: CatalogCategory[] = [];
+  const byId = new Map<string, CatalogCategory>();
+  for (const img of images) {
+    let cat = byId.get(img.category);
+    if (!cat) {
+      cat = { id: img.category, name: img.categoryName, count: 0 };
+      byId.set(img.category, cat);
+      categories.push(cat);
+    }
+    cat.count++;
   }
 
   const catalog: Catalog = {
     generatedAt: new Date().toISOString(),
     count: images.length,
+    categories,
     images,
   };
   await writeFile(CATALOG_PATH, JSON.stringify(catalog, null, 2) + "\n", "utf8");
-  console.log(`  catalog.json: ${images.length} imagen(es)`);
+  console.log(`  catalog.json: ${images.length} imagen(es) en ${categories.length} categoria(s)`);
+  for (const cat of categories) console.log(`    ${cat.name}: ${cat.count}`);
 }
 
 main().catch((err) => {

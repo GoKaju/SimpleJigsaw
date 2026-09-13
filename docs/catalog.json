@@ -1,12 +1,21 @@
 {
-  "generatedAt": "2026-09-13T20:05:15.724Z",
-  "count": 13,
+  "generatedAt": "2026-09-13T20:55:22.011Z",
+  "count": 10,
+  "categories": [
+    {
+      "id": "dinosaurios",
+      "name": "Dinosaurios",
+      "count": 10
+    }
+  ],
   "images": [
     {
       "id": "2151535201",
       "name": "2151535201",
-      "thumb": "thumbs/2151535201.jpg",
-      "image": "images/2151535201.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/2151535201.jpg",
+      "image": "images/dinosaurios/2151535201.jpg",
       "width": 1500,
       "height": 1000,
       "thumbWidth": 300,
@@ -15,8 +24,10 @@
     {
       "id": "ajkaceratops-9bfa2b47",
       "name": "Ajkaceratops",
-      "thumb": "thumbs/ajkaceratops-9bfa2b47.jpg",
-      "image": "images/ajkaceratops-9bfa2b47.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/ajkaceratops-9bfa2b47.jpg",
+      "image": "images/dinosaurios/ajkaceratops-9bfa2b47.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
@@ -25,8 +36,10 @@
     {
       "id": "astrodon-7bdc039c",
       "name": "Astrodon",
-      "thumb": "thumbs/astrodon-7bdc039c.jpg",
-      "image": "images/astrodon-7bdc039c.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/astrodon-7bdc039c.jpg",
+      "image": "images/dinosaurios/astrodon-7bdc039c.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
@@ -35,8 +48,10 @@
     {
       "id": "athenar-488f5cb9",
       "name": "Athenar",
-      "thumb": "thumbs/athenar-488f5cb9.jpg",
-      "image": "images/athenar-488f5cb9.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/athenar-488f5cb9.jpg",
+      "image": "images/dinosaurios/athenar-488f5cb9.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
@@ -45,8 +60,10 @@
     {
       "id": "athenar-4c667ac1",
       "name": "Athenar",
-      "thumb": "thumbs/athenar-4c667ac1.jpg",
-      "image": "images/athenar-4c667ac1.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/athenar-4c667ac1.jpg",
+      "image": "images/dinosaurios/athenar-4c667ac1.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
@@ -55,28 +72,22 @@
     {
       "id": "edmontonia-252dd0c6",
       "name": "Edmontonia",
-      "thumb": "thumbs/edmontonia-252dd0c6.jpg",
-      "image": "images/edmontonia-252dd0c6.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/edmontonia-252dd0c6.jpg",
+      "image": "images/dinosaurios/edmontonia-252dd0c6.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
       "thumbHeight": 164
     },
     {
-      "id": "formas-y-colores",
-      "name": "Formas y Colores",
-      "thumb": "thumbs/formas-y-colores.jpg",
-      "image": "images/formas-y-colores.jpg",
-      "width": 1600,
-      "height": 1200,
-      "thumbWidth": 300,
-      "thumbHeight": 225
-    },
-    {
       "id": "guemesia-b7382bc1",
       "name": "Guemesia",
-      "thumb": "thumbs/guemesia-b7382bc1.jpg",
-      "image": "images/guemesia-b7382bc1.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/guemesia-b7382bc1.jpg",
+      "image": "images/dinosaurios/guemesia-b7382bc1.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
@@ -85,8 +96,10 @@
     {
       "id": "lokiceratops-4a5926a0",
       "name": "Lokiceratops",
-      "thumb": "thumbs/lokiceratops-4a5926a0.jpg",
-      "image": "images/lokiceratops-4a5926a0.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/lokiceratops-4a5926a0.jpg",
+      "image": "images/dinosaurios/lokiceratops-4a5926a0.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
@@ -95,8 +108,10 @@
     {
       "id": "makrodactylus-6a66c2b2",
       "name": "Makrodactylus",
-      "thumb": "thumbs/makrodactylus-6a66c2b2.jpg",
-      "image": "images/makrodactylus-6a66c2b2.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/makrodactylus-6a66c2b2.jpg",
+      "image": "images/dinosaurios/makrodactylus-6a66c2b2.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
@@ -105,32 +120,14 @@
     {
       "id": "makrodactylus-9a88a385",
       "name": "Makrodactylus",
-      "thumb": "thumbs/makrodactylus-9a88a385.jpg",
-      "image": "images/makrodactylus-9a88a385.jpg",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/makrodactylus-9a88a385.jpg",
+      "image": "images/dinosaurios/makrodactylus-9a88a385.jpg",
       "width": 1280,
       "height": 698,
       "thumbWidth": 300,
       "thumbHeight": 164
-    },
-    {
-      "id": "mosaico-ancho",
-      "name": "Mosaico ancho",
-      "thumb": "thumbs/mosaico-ancho.jpg",
-      "image": "images/mosaico-ancho.jpg",
-      "width": 1600,
-      "height": 900,
-      "thumbWidth": 300,
-      "thumbHeight": 169
-    },
-    {
-      "id": "noche-estrellada",
-      "name": "Noche estrellada",
-      "thumb": "thumbs/noche-estrellada.jpg",
-      "image": "images/noche-estrellada.jpg",
-      "width": 1200,
-      "height": 1600,
-      "thumbWidth": 225,
-      "thumbHeight": 300
     }
   ]
 }
