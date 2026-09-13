@@ -10,7 +10,7 @@
 <meta name="format-detection" content="telephone=no">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1.2.0">
 </head>
 <body>
 
@@ -28,7 +28,7 @@
     </section>
     <section class="panel panel-options">
       <h2>2. &iquest;Cu&aacute;ntas piezas?</h2>
-      <div class="presets">
+      <div class="presets" id="piece-presets">
         <button class="btn btn-preset" data-n="12">12</button>
         <button class="btn btn-preset" data-n="24">24</button>
         <button class="btn btn-preset" data-n="48">48</button>
@@ -37,9 +37,9 @@
       </div>
       <div id="piece-label" class="piece-label">24 piezas</div>
       <h2>3. Ayuda</h2>
-      <div class="presets guide-options">
-        <button id="opt-guide-on" class="btn btn-preset active">Con gu&iacute;a</button>
-        <button id="opt-guide-off" class="btn btn-preset">Sin gu&iacute;a</button>
+      <div class="presets guide-options" id="guide-options">
+        <button id="opt-guide-on" class="btn btn-opt active">Con gu&iacute;a</button>
+        <button id="opt-guide-off" class="btn btn-opt">Sin gu&iacute;a</button>
       </div>
       <p class="hint guide-hint">Con gu&iacute;a se ve la imagen atenuada en el tablero. Sin gu&iacute;a, el tablero muestra una textura.</p>
       <button id="btn-play" class="btn btn-primary" disabled>Jugar</button>
@@ -50,17 +50,22 @@
 
 <!-- Pantalla 2: juego -->
 <div id="screen-game" class="screen hidden">
-  <header class="bar game-bar">
-    <button id="btn-back" class="btn btn-small">&lsaquo; Im&aacute;genes</button>
-    <span id="game-title" class="title"></span>
-    <span id="counter" class="counter">0 / 0</span>
-    <button id="btn-guide" class="btn btn-small active">Gu&iacute;a</button>
-    <button id="btn-shuffle" class="btn btn-small">Mezclar</button>
-  </header>
   <div id="play-area" class="play-area">
     <canvas id="bg"></canvas>
     <canvas id="fg"></canvas>
+    <span id="counter" class="counter">0 / 0</span>
+    <button id="btn-menu" class="btn-menu" title="Mant&eacute;n pulsado">&#9679;&#9679;&#9679;</button>
+    <div id="menu-hint" class="menu-hint hidden">Mant&eacute;n pulsado&hellip;</div>
   </div>
+  <div id="menu" class="overlay hidden">
+    <div class="card">
+      <h2>Men&uacute;</h2>
+      <button id="btn-resume" class="btn btn-primary">Seguir jugando</button>
+      <button id="btn-shuffle" class="btn btn-secondary">Mezclar piezas</button>
+      <button id="btn-back" class="btn btn-secondary">Elegir otra imagen</button>
+    </div>
+  </div>
+
   <div id="overlay" class="overlay overlay-win hidden">
     <div class="card">
       <div class="stars">&#9733; &#9733; &#9733;</div>
@@ -80,6 +85,6 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js?v=1.2.0"></script>
 </body>
 </html>
