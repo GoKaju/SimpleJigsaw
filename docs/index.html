@@ -25,10 +25,6 @@
       <h2>1. Elige una imagen</h2>
       <p id="catalog-status" class="status"></p>
       <div id="gallery" class="gallery"></div>
-      <label class="btn btn-secondary file-btn">
-        Subir mi propia foto
-        <input id="file-input" type="file" accept="image/*">
-      </label>
     </section>
     <section class="panel panel-options">
       <h2>2. &iquest;Cu&aacute;ntas piezas?</h2>
@@ -39,8 +35,13 @@
         <button class="btn btn-preset" data-n="72">72</button>
         <button class="btn btn-preset" data-n="100">100</button>
       </div>
-      <input id="piece-range" type="range" min="12" max="100" step="1" value="24">
       <div id="piece-label" class="piece-label">24 piezas</div>
+      <h2>3. Ayuda</h2>
+      <div class="presets guide-options">
+        <button id="opt-guide-on" class="btn btn-preset active">Con gu&iacute;a</button>
+        <button id="opt-guide-off" class="btn btn-preset">Sin gu&iacute;a</button>
+      </div>
+      <p class="hint guide-hint">Con gu&iacute;a se ve la imagen atenuada en el tablero. Sin gu&iacute;a, el tablero muestra una textura.</p>
       <button id="btn-play" class="btn btn-primary" disabled>Jugar</button>
       <p class="hint">Consejo: para guardar la app en el iPad, toca el bot&oacute;n Compartir de Safari y elige &laquo;Agregar a pantalla de inicio&raquo;.</p>
     </section>
@@ -60,9 +61,10 @@
     <canvas id="bg"></canvas>
     <canvas id="fg"></canvas>
   </div>
-  <div id="overlay" class="overlay hidden">
+  <div id="overlay" class="overlay overlay-win hidden">
     <div class="card">
-      <h2 id="overlay-title">&iexcl;Lo lograste!</h2>
+      <div class="stars">&#9733; &#9733; &#9733;</div>
+      <h2 id="overlay-title" class="rainbow">&iexcl;Lo lograste!</h2>
       <p id="overlay-msg"></p>
       <button id="btn-again" class="btn btn-primary">Mezclar de nuevo</button>
       <button id="btn-other" class="btn btn-secondary">Elegir otra imagen</button>

@@ -81,20 +81,16 @@ html, body {
 .btn-secondary { background: #4a5f93; width: 100%; }
 .btn-small { min-height: 36px; line-height: 36px; padding: 0 12px; font-size: 15px; }
 .btn.active { background: #ffd166; color: #332a00; }
-.file-btn { position: relative; overflow: hidden; }
-.file-btn input { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; font-size: 100px; }
 
 .presets { display: -webkit-flex; display: flex; margin: 0 -3px 6px; }
 .btn-preset { -webkit-flex: 1; flex: 1; margin: 0 3px; padding: 0; background: #3b4d7d; }
 
-input[type=range] {
-  width: 100%; height: 44px; margin: 6px 0; -webkit-appearance: none; appearance: none; background: transparent;
-}
-input[type=range]::-webkit-slider-runnable-track { height: 10px; background: #131b30; border-radius: 5px; }
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 34px; height: 34px; border-radius: 50%;
-  background: #ffd166; margin-top: -12px; border: 0;
-}
+.btn-preset { min-height: 52px; line-height: 52px; font-size: 20px; }
+.guide-options .btn-preset { font-size: 17px; }
+.guide-hint { margin-top: 0; }
+.panel h2 + .presets { margin-top: 4px; }
+.panel-options h2 { margin-top: 14px; }
+.panel-options h2:first-child { margin-top: 0; }
 .piece-label { text-align: center; font-size: 22px; font-weight: 600; margin: 4px 0 12px; }
 .hint { font-size: 13px; opacity: 0.7; line-height: 1.4; }
 
@@ -130,3 +126,25 @@ input[type=range]::-webkit-slider-thumb {
   .thumb img { height: 90px; }
   .bar .title { font-size: 17px; }
 }
+
+/* Victoria */
+.overlay-win { background: rgba(10, 14, 28, 0.35); }
+.overlay-win .card {
+  background: #fff7e6; color: #3b2a00; border: 6px solid #ffd166;
+  -webkit-animation: pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1); animation: pop 0.6s cubic-bezier(0.2, 1.4, 0.4, 1);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+.overlay-win .card h2 { font-size: 40px; margin: 4px 0 6px; }
+.overlay-win .card p { color: #7a5a00; }
+.stars { font-size: 34px; color: #ffb703; letter-spacing: 6px; -webkit-animation: wiggle 1.2s ease-in-out infinite; animation: wiggle 1.2s ease-in-out infinite; }
+.rainbow {
+  background: -webkit-linear-gradient(left, #ef476f, #ffd166, #06d6a0, #118ab2, #9b5de5);
+  background: linear-gradient(90deg, #ef476f, #ffd166, #06d6a0, #118ab2, #9b5de5);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.overlay-win .btn-primary { background: #ef476f; color: #fff; }
+.overlay-win .btn-secondary { background: #118ab2; }
+@-webkit-keyframes pop { from { -webkit-transform: scale(0.3); opacity: 0; } to { -webkit-transform: scale(1); opacity: 1; } }
+@keyframes pop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@-webkit-keyframes wiggle { 0%, 100% { -webkit-transform: rotate(-6deg) scale(1); } 50% { -webkit-transform: rotate(6deg) scale(1.15); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-6deg) scale(1); } 50% { transform: rotate(6deg) scale(1.15); } }
