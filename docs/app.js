@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.3.0';
+  var VERSION = '1.4.0';
   var MAX_SRC = 1600;          // lado maximo de la imagen fuente (fotos subidas)
   var TAB = 0.1;               // tamano del tab relativo al lado de la pieza (altura = 3*TAB)
   var MARGIN_FACTOR = 0.36;    // margen alrededor de cada pieza para que quepan los tabs
@@ -14,6 +14,7 @@
   var GHOST_ALPHA = 0.25;
   var MENU_HOLD_MS = 900;      // pulsacion larga para abrir el menu de adultos
   var COLORS = ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#9b5de5', '#ff8c42', '#ffffff'];
+  var POP_MS = 280;            // duracion del destello + rebote al encajar una pieza
 
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var catalog = [];            // entradas de catalog.json
@@ -30,6 +31,10 @@
   var staticLayer = null;      // canvas fuera de pantalla: tablero + piezas encajadas
   var frameRequested = false;
   var resizeTimer = null;
+  var pops = [];               // animaciones de encaje en curso (destello + rebote)
+  var popRunning = false;      // hay un bucle de animacion de encaje pedido
+  var audioCtx = null;         // Web Audio (webkitAudioContext en iOS 9)
+  var audioBroken = false;     // el navegador no tiene Web Audio utilizable
 
   // ------------------------------------------------------------------
   // Utilidades
@@ -473,6 +478,7 @@
     for (var i = 0; i < game.pieces.length; i++) game.pieces[i].locked = false;
     game.won = false;
     game.drag = null;
+    clearPops();
     stopConfetti();
     closeMenu();
     hide(el.overlay);
@@ -556,19 +562,23 @@
     }
   }
 
-  // Capa superior: solo la pieza arrastrada (barata de redibujar en cada movimiento).
+  // Capa superior: encajes recientes + la pieza arrastrada. Durante la victoria
+  // la gestiona el confeti, que pinta sobre el mismo lienzo.
   function drawFg() {
     frameRequested = false;
-    if (!game || !game.drag) return;
-    var p = game.drag.piece;
+    if (!game || confetti) return;
     var ctx = el.fg.getContext('2d');
     ctx.clearRect(0, 0, game.W, game.H);
-    ctx.save();
-    ctx.shadowColor = 'rgba(0,0,0,0.5)';
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 3;
-    ctx.drawImage(p.canvas, p.x, p.y, p.w, p.h);
-    ctx.restore();
+    drawPops(ctx);
+    if (game.drag) {
+      var p = game.drag.piece;
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetY = 3;
+      ctx.drawImage(p.canvas, p.x, p.y, p.w, p.h);
+      ctx.restore();
+    }
   }
 
   function clearFg() {
@@ -578,6 +588,102 @@
   function updateCounter() {
     var lockedCount = game.pieces.length - game.loose.length;
     setText(el.counter, lockedCount + ' / ' + game.pieces.length);
+  }
+
+  // ------------------------------------------------------------------
+  // Retroalimentacion al encajar una pieza: clic + destello + rebote
+  // ------------------------------------------------------------------
+  // iOS no expone la API de vibracion y el iPad no tiene motor haptico, asi que
+  // la confirmacion de "pieza colocada" es sonora y visual.
+  function getAudioCtx() {
+    if (audioCtx || audioBroken) return audioCtx;
+    var Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) { audioBroken = true; return null; }
+    try { audioCtx = new Ctor(); } catch (e) { audioBroken = true; }
+    return audioCtx;
+  }
+
+  // iOS solo deja sonar el audio despues de un gesto del usuario: el primer
+  // toque sobre una pieza reproduce un buffer mudo para desbloquear el contexto.
+  function unlockAudio() {
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    if (ctx.resume && ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+    if (ctx.sjUnlocked) return;
+    ctx.sjUnlocked = true;
+    try {
+      var src = ctx.createBufferSource();
+      src.buffer = ctx.createBuffer(1, 1, 22050);
+      src.connect(ctx.destination);
+      if (src.start) src.start(0); else if (src.noteOn) src.noteOn(0);
+    } catch (e) { /* si no se puede desbloquear, queda solo el efecto visual */ }
+  }
+
+  // Clic corto generado por codigo (sin archivos que descargar): un tono que cae
+  // de agudo a grave en menos de un decimo de segundo.
+  function playClick() {
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+      var t = ctx.currentTime;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain ? ctx.createGain() : ctx.createGainNode();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(880, t);
+      osc.frequency.exponentialRampToValueAtTime(320, t + 0.09);
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.28, t + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      if (osc.start) osc.start(t); else if (osc.noteOn) osc.noteOn(t);
+      if (osc.stop) osc.stop(t + 0.14); else if (osc.noteOff) osc.noteOff(t + 0.14);
+    } catch (e) { /* sin sonido: el destello y el rebote siguen funcionando */ }
+  }
+
+  function addPop(p) {
+    pops.push({ piece: p, start: new Date().getTime() });
+    if (!popRunning) { popRunning = true; requestFrame(popFrame); }
+  }
+
+  function clearPops() { pops.length = 0; }
+
+  function popFrame() {
+    popRunning = false;
+    if (!game || !pops.length) { pops.length = 0; return; }
+    drawFg();
+    if (pops.length) { popRunning = true; requestFrame(popFrame); }
+  }
+
+  // Pinta las piezas recien encajadas sobre la capa superior. La escala nunca
+  // baja de 1 para que la copia ya fijada en la capa estatica quede tapada.
+  function drawPops(ctx) {
+    if (!pops.length) return;
+    var now = new Date().getTime();
+    for (var i = pops.length - 1; i >= 0; i--) {
+      var pop = pops[i];
+      var t = (now - pop.start) / POP_MS;
+      if (t >= 1) { pops.splice(i, 1); continue; }
+      var p = pop.piece;
+      var scale = 1 + 0.16 * Math.sin(Math.PI * Math.pow(t, 0.55));  // rebote
+      var flash = (1 - t) * (1 - t);                                 // destello
+      var halo = scale + 0.14;
+      ctx.save();
+      ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+      // Halo exterior: copia mayor en modo aditivo.
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.45 * flash;
+      ctx.drawImage(p.canvas, -p.w * halo / 2, -p.h * halo / 2, p.w * halo, p.h * halo);
+      // La pieza en su rebote.
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+      ctx.drawImage(p.canvas, -p.w * scale / 2, -p.h * scale / 2, p.w * scale, p.h * scale);
+      // Golpe de luz encima, que se apaga con el resto.
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.5 * flash;
+      ctx.drawImage(p.canvas, -p.w * scale / 2, -p.h * scale / 2, p.w * scale, p.h * scale);
+      ctx.restore();
+    }
   }
 
   // ------------------------------------------------------------------
@@ -608,6 +714,7 @@
     var pt = localPoint(clientX, clientY);
     var piece = hitTest(pt.x, pt.y);
     if (!piece) return false;
+    unlockAudio();  // debe ocurrir dentro del gesto para que iOS permita sonido
     game.loose.splice(game.loose.indexOf(piece), 1);
     game.loose.push(piece);
     game.drag = { piece: piece, dx: pt.x - piece.x, dy: pt.y - piece.y, id: touchId };
@@ -630,21 +737,26 @@
     var p = game.drag.piece;
     game.drag = null;
     var dx = p.x - p.tx, dy = p.y - p.ty;
+    var placed = false;
     if (dx * dx + dy * dy <= game.snap * game.snap) {
       p.x = p.tx; p.y = p.ty; p.locked = true;
       game.loose.splice(game.loose.indexOf(p), 1);
       drawOnStatic(p);
       updateCounter();
+      placed = true;
     } else {
       storeNormalized(p);
     }
     clearFg();
     redrawBg(null);
-    if (game.loose.length === 0) win();
+    if (placed) playClick();
+    if (game.loose.length === 0) { clearPops(); win(); return; }
+    if (placed) addPop(p);
   }
 
   function win() {
     game.won = true;
+    clearPops();
     setText(el.overlayMsg, game.pieces.length + ' piezas · ' + game.entry.name);
     startConfetti();
     setTimeout(function () { if (game && game.won) show(el.overlay); }, 700);
@@ -801,6 +913,7 @@
   }
 
   function backToCatalog() {
+    clearPops();
     stopConfetti();
     closeMenu();
     game = null;
@@ -815,6 +928,7 @@
       resizeTimer = null;
       if (!game || /\bhidden\b/.test(el.screenGame.className)) return;
       game.drag = null;
+      clearPops();
       stopConfetti();
       layoutGame(true);
       rebuildStatic();

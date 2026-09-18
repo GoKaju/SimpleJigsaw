@@ -115,9 +115,13 @@ funciona con Safari 9. Si una imagen no carga tras actualizar el catálogo, reca
   pieza vecina lo recorre al revés, por lo que encajan exactamente.
 - **Rendimiento**: cada pieza se pre-renderiza en su propio canvas (recorte + contorno). Hay dos
   canvas apilados: el de fondo (tablero, guía y piezas) solo se redibuja al tomar o soltar una
-  pieza; el superior dibuja únicamente la pieza que se arrastra en cada movimiento.
+  pieza; el superior dibuja solo la pieza que se arrastra y el destello de las recién encajadas.
 - **Interacción**: eventos táctiles (`touchstart/move/end`) y de mouse, hit-test por alpha del
   canvas de la pieza, snap cuando la pieza queda a menos del 30 % de su tamaño del destino.
+- **Al encajar una pieza**: suena un clic corto generado con Web Audio (sin archivos que
+  descargar) y la pieza da un pequeño rebote con un destello que se apaga en 280 ms. No hay
+  vibración porque iOS no expone la API y el iPad no tiene motor háptico; si el iPad está en
+  silencio, el destello sigue confirmando el acierto.
 - **Victoria**: al encajar todas las piezas cae una lluvia de confeti y estrellas sobre el canvas
   y aparece un mensaje colorido con botones «Mezclar de nuevo» y «Elegir otra imagen».
 
