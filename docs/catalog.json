@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-16T04:00:51.998Z",
-  "count": 43,
+  "generatedAt": "2026-10-14T00:00:10.668Z",
+  "count": 72,
   "categories": [
     {
       "id": "animales",
@@ -10,7 +10,7 @@
     {
       "id": "dinosaurios",
       "name": "Dinosaurios",
-      "count": 16
+      "count": 45
     }
   ],
   "images": [
@@ -375,6 +375,30 @@
       "thumbHeight": 164
     },
     {
+      "id": "anquilosaurio-en-el-museo",
+      "name": "Anquilosaurio en el museo",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/anquilosaurio-en-el-museo.jpg",
+      "image": "images/dinosaurios/anquilosaurio-en-el-museo.jpg",
+      "width": 1600,
+      "height": 1200,
+      "thumbWidth": 300,
+      "thumbHeight": 225
+    },
+    {
+      "id": "anquilosaurio",
+      "name": "Anquilosaurio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/anquilosaurio.jpg",
+      "image": "images/dinosaurios/anquilosaurio.jpg",
+      "width": 1600,
+      "height": 905,
+      "thumbWidth": 300,
+      "thumbHeight": 170
+    },
+    {
       "id": "astrodon-7bdc039c",
       "name": "Astrodon",
       "category": "dinosaurios",
@@ -387,6 +411,18 @@
       "thumbHeight": 164
     },
     {
+      "id": "braquiosaurio-gigante",
+      "name": "Braquiosaurio gigante",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/braquiosaurio-gigante.jpg",
+      "image": "images/dinosaurios/braquiosaurio-gigante.jpg",
+      "width": 1600,
+      "height": 1200,
+      "thumbWidth": 300,
+      "thumbHeight": 225
+    },
+    {
       "id": "braquiosaurio",
       "name": "Braquiosaurio",
       "category": "dinosaurios",
@@ -395,6 +431,66 @@
       "image": "images/dinosaurios/braquiosaurio.jpg",
       "width": 1500,
       "height": 1000,
+      "thumbWidth": 300,
+      "thumbHeight": 200
+    },
+    {
+      "id": "braquiosaurios-en-el-bosque",
+      "name": "Braquiosaurios en el bosque",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/braquiosaurios-en-el-bosque.jpg",
+      "image": "images/dinosaurios/braquiosaurios-en-el-bosque.jpg",
+      "width": 1600,
+      "height": 899,
+      "thumbWidth": 300,
+      "thumbHeight": 168
+    },
+    {
+      "id": "carnotauro-rojo",
+      "name": "Carnotauro rojo",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/carnotauro-rojo.jpg",
+      "image": "images/dinosaurios/carnotauro-rojo.jpg",
+      "width": 1600,
+      "height": 1365,
+      "thumbWidth": 300,
+      "thumbHeight": 256
+    },
+    {
+      "id": "carnotauro",
+      "name": "Carnotauro",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/carnotauro.jpg",
+      "image": "images/dinosaurios/carnotauro.jpg",
+      "width": 1600,
+      "height": 900,
+      "thumbWidth": 300,
+      "thumbHeight": 169
+    },
+    {
+      "id": "dinosaurio-en-la-selva",
+      "name": "Dinosaurio en la selva",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/dinosaurio-en-la-selva.jpg",
+      "image": "images/dinosaurios/dinosaurio-en-la-selva.jpg",
+      "width": 1600,
+      "height": 1063,
+      "thumbWidth": 300,
+      "thumbHeight": 199
+    },
+    {
+      "id": "dinosaurio-y-cielo-azul",
+      "name": "Dinosaurio y cielo azul",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/dinosaurio-y-cielo-azul.jpg",
+      "image": "images/dinosaurios/dinosaurio-y-cielo-azul.jpg",
+      "width": 1600,
+      "height": 1067,
       "thumbWidth": 300,
       "thumbHeight": 200
     },
@@ -423,6 +519,18 @@
       "thumbHeight": 167
     },
     {
+      "id": "dinosaurios-del-jardin",
+      "name": "Dinosaurios del jardin",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/dinosaurios-del-jardin.jpg",
+      "image": "images/dinosaurios/dinosaurios-del-jardin.jpg",
+      "width": 1600,
+      "height": 1063,
+      "thumbWidth": 300,
+      "thumbHeight": 199
+    },
+    {
       "id": "edmontonia-252dd0c6",
       "name": "Edmontonia",
       "category": "dinosaurios",
@@ -433,6 +541,126 @@
       "height": 698,
       "thumbWidth": 300,
       "thumbHeight": 164
+    },
+    {
+      "id": "espinosaurio-en-el-rio",
+      "name": "Espinosaurio en el rio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/espinosaurio-en-el-rio.jpg",
+      "image": "images/dinosaurios/espinosaurio-en-el-rio.jpg",
+      "width": 1600,
+      "height": 1105,
+      "thumbWidth": 300,
+      "thumbHeight": 207
+    },
+    {
+      "id": "esqueleto-de-diplodocus",
+      "name": "Esqueleto de diplodocus",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/esqueleto-de-diplodocus.jpg",
+      "image": "images/dinosaurios/esqueleto-de-diplodocus.jpg",
+      "width": 1600,
+      "height": 1060,
+      "thumbWidth": 300,
+      "thumbHeight": 199
+    },
+    {
+      "id": "esqueleto-de-espinosaurio",
+      "name": "Esqueleto de espinosaurio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/esqueleto-de-espinosaurio.jpg",
+      "image": "images/dinosaurios/esqueleto-de-espinosaurio.jpg",
+      "width": 1600,
+      "height": 880,
+      "thumbWidth": 300,
+      "thumbHeight": 165
+    },
+    {
+      "id": "esqueleto-de-estegosaurio",
+      "name": "Esqueleto de estegosaurio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/esqueleto-de-estegosaurio.jpg",
+      "image": "images/dinosaurios/esqueleto-de-estegosaurio.jpg",
+      "width": 1600,
+      "height": 753,
+      "thumbWidth": 300,
+      "thumbHeight": 141
+    },
+    {
+      "id": "esqueleto-de-parasaurolofo",
+      "name": "Esqueleto de parasaurolofo",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/esqueleto-de-parasaurolofo.jpg",
+      "image": "images/dinosaurios/esqueleto-de-parasaurolofo.jpg",
+      "width": 1600,
+      "height": 1310,
+      "thumbWidth": 300,
+      "thumbHeight": 245
+    },
+    {
+      "id": "esqueleto-de-t-rex",
+      "name": "Esqueleto de T rex",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/esqueleto-de-t-rex.jpg",
+      "image": "images/dinosaurios/esqueleto-de-t-rex.jpg",
+      "width": 1600,
+      "height": 1200,
+      "thumbWidth": 300,
+      "thumbHeight": 225
+    },
+    {
+      "id": "esqueleto-de-tiranosaurio",
+      "name": "Esqueleto de tiranosaurio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/esqueleto-de-tiranosaurio.jpg",
+      "image": "images/dinosaurios/esqueleto-de-tiranosaurio.jpg",
+      "width": 1600,
+      "height": 1060,
+      "thumbWidth": 300,
+      "thumbHeight": 199
+    },
+    {
+      "id": "esqueleto-de-triceratops",
+      "name": "Esqueleto de triceratops",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/esqueleto-de-triceratops.jpg",
+      "image": "images/dinosaurios/esqueleto-de-triceratops.jpg",
+      "width": 1600,
+      "height": 1214,
+      "thumbWidth": 300,
+      "thumbHeight": 227
+    },
+    {
+      "id": "estegosaurio-ilustrado",
+      "name": "Estegosaurio ilustrado",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/estegosaurio-ilustrado.jpg",
+      "image": "images/dinosaurios/estegosaurio-ilustrado.jpg",
+      "width": 1600,
+      "height": 929,
+      "thumbWidth": 300,
+      "thumbHeight": 174
+    },
+    {
+      "id": "estegosaurio",
+      "name": "Estegosaurio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/estegosaurio.jpg",
+      "image": "images/dinosaurios/estegosaurio.jpg",
+      "width": 1600,
+      "height": 773,
+      "thumbWidth": 300,
+      "thumbHeight": 145
     },
     {
       "id": "guemesia-b7382bc1",
@@ -447,6 +675,18 @@
       "thumbHeight": 164
     },
     {
+      "id": "iguanodonte",
+      "name": "Iguanodonte",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/iguanodonte.jpg",
+      "image": "images/dinosaurios/iguanodonte.jpg",
+      "width": 1600,
+      "height": 983,
+      "thumbWidth": 300,
+      "thumbHeight": 184
+    },
+    {
       "id": "lokiceratops-4a5926a0",
       "name": "Lokiceratops",
       "category": "dinosaurios",
@@ -457,6 +697,54 @@
       "height": 698,
       "thumbWidth": 300,
       "thumbHeight": 164
+    },
+    {
+      "id": "mosasaurio",
+      "name": "Mosasaurio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/mosasaurio.jpg",
+      "image": "images/dinosaurios/mosasaurio.jpg",
+      "width": 1600,
+      "height": 621,
+      "thumbWidth": 300,
+      "thumbHeight": 116
+    },
+    {
+      "id": "paquicefalosaurio",
+      "name": "Paquicefalosaurio",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/paquicefalosaurio.jpg",
+      "image": "images/dinosaurios/paquicefalosaurio.jpg",
+      "width": 1600,
+      "height": 1105,
+      "thumbWidth": 300,
+      "thumbHeight": 207
+    },
+    {
+      "id": "pteranodon-en-el-bosque",
+      "name": "Pteranodon en el bosque",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/pteranodon-en-el-bosque.jpg",
+      "image": "images/dinosaurios/pteranodon-en-el-bosque.jpg",
+      "width": 1600,
+      "height": 899,
+      "thumbWidth": 300,
+      "thumbHeight": 168
+    },
+    {
+      "id": "pteranodones-sobre-el-mar",
+      "name": "Pteranodones sobre el mar",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/pteranodones-sobre-el-mar.jpg",
+      "image": "images/dinosaurios/pteranodones-sobre-el-mar.jpg",
+      "width": 1600,
+      "height": 1028,
+      "thumbWidth": 300,
+      "thumbHeight": 193
     },
     {
       "id": "pterodactilo",
@@ -495,6 +783,18 @@
       "thumbHeight": 164
     },
     {
+      "id": "sauropodo-con-espinas",
+      "name": "Sauropodo con espinas",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/sauropodo-con-espinas.jpg",
+      "image": "images/dinosaurios/sauropodo-con-espinas.jpg",
+      "width": 1600,
+      "height": 688,
+      "thumbWidth": 300,
+      "thumbHeight": 129
+    },
+    {
       "id": "tiranosaurio-rex",
       "name": "Tiranosaurio rex",
       "category": "dinosaurios",
@@ -505,6 +805,30 @@
       "height": 897,
       "thumbWidth": 300,
       "thumbHeight": 168
+    },
+    {
+      "id": "tiranosaurio-y-triceratops",
+      "name": "Tiranosaurio y triceratops",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/tiranosaurio-y-triceratops.jpg",
+      "image": "images/dinosaurios/tiranosaurio-y-triceratops.jpg",
+      "width": 1600,
+      "height": 1200,
+      "thumbWidth": 300,
+      "thumbHeight": 225
+    },
+    {
+      "id": "triceratops-en-el-bosque",
+      "name": "Triceratops en el bosque",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/triceratops-en-el-bosque.jpg",
+      "image": "images/dinosaurios/triceratops-en-el-bosque.jpg",
+      "width": 1600,
+      "height": 1063,
+      "thumbWidth": 300,
+      "thumbHeight": 199
     },
     {
       "id": "triceratops-en-su-habitat",
@@ -519,6 +843,18 @@
       "thumbHeight": 200
     },
     {
+      "id": "triceratops-ilustrado",
+      "name": "Triceratops ilustrado",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/triceratops-ilustrado.jpg",
+      "image": "images/dinosaurios/triceratops-ilustrado.jpg",
+      "width": 1600,
+      "height": 696,
+      "thumbWidth": 300,
+      "thumbHeight": 131
+    },
+    {
       "id": "triceratops",
       "name": "Triceratops",
       "category": "dinosaurios",
@@ -529,6 +865,18 @@
       "height": 1067,
       "thumbWidth": 300,
       "thumbHeight": 200
+    },
+    {
+      "id": "velociraptor-con-plumas",
+      "name": "Velociraptor con plumas",
+      "category": "dinosaurios",
+      "categoryName": "Dinosaurios",
+      "thumb": "thumbs/dinosaurios/velociraptor-con-plumas.jpg",
+      "image": "images/dinosaurios/velociraptor-con-plumas.jpg",
+      "width": 1600,
+      "height": 981,
+      "thumbWidth": 300,
+      "thumbHeight": 184
     }
   ]
 }
